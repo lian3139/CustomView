@@ -61,6 +61,17 @@ public class CustomTextView extends View {
 
     }
 
+    /**
+     *
+     * @param widthMeasureSpec
+     *  onMesure 的作用就是CustomTextView告诉父控件自己需要多大的空间，两个参数的作用是：父控件告诉CustomTextView能提供多大的空间
+     *  widthMesureSpec 中的width和widthMode都是由CustomTextView的layout_width决定的，若是layout_width为match_parent，则width为父控件
+     *  的width，widthMode为EXACTLY； 若是layout_width为具体数值， 则width为具体数值，widthMode为EXACTLY； 若是layout_width为wrap_content，
+     *  则width为父控件的width，widthMode为AT_MOST, 所以将自定义控件的layout_width设为wrap_content而没有重写onMesure方法时，自定义控件将会
+     *  撑满父控件。
+     *  最后调用setMeasuredDimension(width, height)就是告诉父控件自己需要多大的空间
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
