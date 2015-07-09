@@ -45,6 +45,9 @@ public class CustomTextView extends View {
                     mTextColor = typedArray.getColor(attr, Color.BLACK);
                     break;
                 case R.styleable.CustomTextView_textSize:
+                    //getDimensionPixelSize(int index, int defValue), 获取index指定的size属性的值， defValue为属性没有定义时返回的默认值
+                    // TypedValue.applyDimension(int unit, float value, DisplayMetrics metrics)作用是将指定单位的数值转换成像素，unit为要转换的单位，value为要转换的数值，
+                    // 例子中是将16sp转换成px为单位的值
                     mTextSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics()));
                     // getDimensionPixelSize: 获取尺寸属性的值
                     // applyDimension:
@@ -75,16 +78,51 @@ public class CustomTextView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int width;
+        int height;
+
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else {
+            float textWidth = mBound.width();
+            int paddingLeft = getPaddingLeft();
+            int paddingRight = getPaddingRight();
+            width = (int) (textWidth + paddingLeft + paddingRight);
+
+        }
+
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else {
+            float textHeight = mBound.height();
+            int paddingTop = getPaddingTop();
+            int paddingBottom = getPaddingBottom();
+            height = (int) (textHeight + paddingTop + paddingBottom);
+        }
+
+        setMeasuredDimension(width, height);
     }
 
+    /**
+     * onDraw 会在onMesure后执行，getMesuredWidth、getMesureHeight获得的就是setMesuredDimension() 的width、height
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mPaint.setColor(Color.YELLOW);
+        int height = getMeasuredHeight();
+        int width = getMeasuredWidth();
         canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), mPaint);
 
         mPaint.setColor(mTextColor);
-        canvas.drawText(mText, getWidth() - mBound.width(), (getHeight() - mBound.height())/2 + mBound.height(), mPaint);
-        canvas.drawText(mText, getWidth() - mBound.width(), (getHeight() - mBound.height())/2 + mBound.height(), mPaint);
+        //mPaint.setTextAlign(Paint.Align.CENTER);
+        int width1 = getWidth();
+        int height1 = getHeight();
+        canvas.drawText(mText, (getWidth() - mBound.width())/2, (getHeight() - mBound.height())/2 + mBound.height(), mPaint);
     }
 }
